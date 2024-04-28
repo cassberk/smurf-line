@@ -1,12 +1,12 @@
 from enum import Enum
 from typing import Optional
-from fastapi.responses import JSONResponse
 import pydantic
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, HTTPException
 import uvicorn
 import pandas as pd
 
 app: FastAPI = FastAPI(debug=True)
+
 
 class WaveProperties(str, Enum):
     mean_wave_direction = "MWD"
@@ -28,7 +28,7 @@ class BuoyDataOut(pydantic.BaseModel):
 @app.get("/realtime/{buoy_id}")
 async def get_buoy_data(
     buoy_id: int,
-    ):
+) -> BuoyDataOut:
     """Retrieve the current data from the realtime2 data set."""
 
     url = f"https://www.ndbc.noaa.gov/data/realtime2/{buoy_id}.txt"
@@ -37,7 +37,7 @@ async def get_buoy_data(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    data = {"buoy_id": buoy_id }
+    data = {"buoy_id": buoy_id}
     for prop in WaveProperties:
         try:
             data[prop.name] = df_buoy.loc[1][prop.value]

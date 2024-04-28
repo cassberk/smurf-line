@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "smurf"
+name = "smurf-line"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -11,6 +11,10 @@ fastapi = "^0.110.2"
 uvicorn = "^0.29.0"
 pandas = "^2.2.2"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+ruff = "^0.4.2"
 
 [build-system]
 requires = ["poetry-core"]
