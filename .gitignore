@@ -11,6 +11,11 @@
 *.pyc
 *.swp
 *.swo
+*.pyo
+*.pyd
+__pycache__/
+**/__pycache__/
+*.cpython-39.pyc
 **/docs/_build/
 **/docs/_static/
 **/docs/_templates/
