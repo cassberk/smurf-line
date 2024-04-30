@@ -1,51 +1,18 @@
-from enum import Enum
-from typing import Optional
-import pydantic
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, FastAPI
 import uvicorn
-import pandas as pd
+from .api.waves.endpoints import wave_router
 
 app: FastAPI = FastAPI(debug=True)
 
+version_router: APIRouter = APIRouter()
 
-class WaveProperties(str, Enum):
-    mean_wave_direction = "MWD"
-    average_period = "APD"
-    significant_height = "WVHT"
-    dominant_period = "DPD"
-    water_temperature = "WTMP"
+# ----- Versioned Routers Start ----- #
 
+version_router.include_router(
+    wave_router, prefix="/waves", tags=["waves"]
+)
 
-class BuoyDataOut(pydantic.BaseModel):
-    buoy_id: int
-    mean_wave_direction: Optional[float] = None
-    average_period: Optional[float] = None
-    significant_height: Optional[float] = None
-    dominant_period: Optional[float] = None
-    water_temperature: Optional[float] = None
-
-
-@app.get("/realtime/{buoy_id}")
-async def get_buoy_data(
-    buoy_id: int,
-) -> BuoyDataOut:
-    """Retrieve the current data from the realtime2 data set."""
-
-    url = f"https://www.ndbc.noaa.gov/data/realtime2/{buoy_id}.txt"
-    try:
-        df_buoy = pd.read_csv(url, delim_whitespace=True)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    data = {"buoy_id": buoy_id}
-    for prop in WaveProperties:
-        try:
-            data[prop.name] = df_buoy.loc[1][prop.value]
-        except Exception as e:
-            raise HTTPException(status_code=422, detail=str(e))
-
-    return BuoyDataOut(**data)
-
+app.include_router(version_router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8080)
