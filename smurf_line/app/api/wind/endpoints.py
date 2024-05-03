@@ -11,7 +11,7 @@ class WindOut(BaseModel):
 
 
 def _meters_per_second_to_knots(mps: float) -> float:
-    return round(mps * 1.94384,1)
+    return round(mps * 1.94384, 1)
 
 
 @wind_router.get("/realtime/{location}")
