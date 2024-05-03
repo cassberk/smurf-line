@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException
 import requests
 
+OPEN_WEATHER_MAP_API_KEY = "e73aa31e7b34ba28ca327af468e3df8e"
+
 wind_router = APIRouter()
 
 
@@ -18,7 +20,7 @@ def _meters_per_second_to_knots(mps: float) -> float:
 async def get_wind_data(location: str) -> WindOut:
     """Retrieve the current data from the realtime2 data set."""
     lat, lon = location.split(",")
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=e73aa31e7b34ba28ca327af468e3df8e"
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPEN_WEATHER_MAP_API_KEY}"
     resp = requests.get(url)
     if resp.status_code == 200:
         meters_per_second = resp.json()["wind"]["speed"]
