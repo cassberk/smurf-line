@@ -6,6 +6,7 @@ import pandas as pd
 
 wave_router = APIRouter()
 
+
 class WaveProperties(str, Enum):
     mean_wave_direction = "MWD"
     average_period = "APD"
